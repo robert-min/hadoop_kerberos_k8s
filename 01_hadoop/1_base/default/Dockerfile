@@ -1,5 +1,7 @@
 FROM robertmin/centos-java
 
+# zookeeper install
+
 # hadoop install
 RUN curl -O --insecure https://dist.apache.org/repos/dist/release/hadoop/common/KEYS
 RUN gpg --import KEYS
@@ -23,16 +25,14 @@ ENV MULTIHOMED_NETWORK=1
 ENV PATH $HADOOP_HOME/bin/:$PATH
 
 # default setting
-ADD ./config/default/core-site.xml ${HADOOP_CONF_DIR}/core-site.xml
-ADD ./config/default/hdfs-site.xml ${HADOOP_CONF_DIR}/hdfs-site.xml
-ADD ./config/default/yarn-site.xml ${HADOOP_CONF_DIR}/yarn-site.xml
-ADD ./config/default/mapred-site.xml ${HADOOP_CONF_DIR}/mapred-site.xml
+ADD ./config/core-site.xml ${HADOOP_CONF_DIR}/core-site.xml
+ADD ./config/hdfs-site.xml ${HADOOP_CONF_DIR}/hdfs-site.xml
+ADD ./config/yarn-site.xml ${HADOOP_CONF_DIR}/yarn-site.xml
+ADD ./config/mapred-site.xml ${HADOOP_CONF_DIR}/mapred-site.xml
 
-# secure kerberos setting
-# ADD ./config/secure/core-site.xml ${HADOOP_CONF_DIR}/core-site.xml
-# ADD ./config/secure/hdfs-site.xml ${HADOOP_CONF_DIR}/hdfs-site.xml
-# ADD ./config/secure/yarn-site.xml ${HADOOP_CONF_DIR}/yarn-site.xml
-# ADD ./config/secure/mapred-site.xml ${HADOOP_CONF_DIR}/mapred-site.xml
+# HDFS ports
+EXPOSE 8020 8485 9000 50070 
+# Mapred ports
 
-# RUN yum install -y krb5-libs krb5-workstation
-# ADD config/krb5.conf /etc/krb5.conf
+# YARN ports
+EXPOSE 8089 
