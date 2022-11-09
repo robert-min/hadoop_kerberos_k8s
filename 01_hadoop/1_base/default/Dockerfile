@@ -1,6 +1,5 @@
 FROM robertmin/centos-java
 
-# zookeeper install
 
 # hadoop install
 RUN curl -O --insecure https://dist.apache.org/repos/dist/release/hadoop/common/KEYS
@@ -31,7 +30,7 @@ ADD ./config/yarn-site.xml ${HADOOP_CONF_DIR}/yarn-site.xml
 ADD ./config/mapred-site.xml ${HADOOP_CONF_DIR}/mapred-site.xml
 
 # HDFS ports
-EXPOSE 8020 8485 9000 50070 
+EXPOSE 8485 9000 50070 
 # Mapred ports
 
 # YARN ports

@@ -1,0 +1,35 @@
+version: "3"
+
+networks:
+  default_bridge:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.26.0.0/16
+volumes:
+  namenode:
+  # datanode:
+  journalnode:
+  # resourcemanager:
+  # nodemanager:
+
+
+services:
+  # jn:
+  #   build: ./01_hadoop/3_journalnode
+  #   hostname: jn
+  #   volumes:
+  #     - journalnode:/hadoop/dfs/journal
+
+  nn:
+    build: ./01_hadoop/2_namenode
+    # hostname: nn
+    container_name: nn
+    volumes:
+      - namenode:/hadoop/dfs/name
+      - journalnode:/hadoop/dfs/journal
+    extra_hosts:
+      - 'nn:172.26.0.10'
+    networks:
+      default_bridge:
+        ipv4_address: 172.26.0.10
