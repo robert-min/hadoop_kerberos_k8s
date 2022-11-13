@@ -76,3 +76,66 @@ spec:
 ```
 
 <br></br><br></br>
+
+
+# 영구 볼륨 클레임
+
+<br></br>
+
+## Container Storage Interface(CSI Driver)
+* 컨테이너 오케스트레이션 엔진과 스토리지 시스템을 연결하는 인터페이스
+
+### 영구볼륨 생성
+
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sample
+  labels: # 레이블
+    type: gce-pv
+    environment: stg
+  spec:
+    capacity: # 용량
+      storage: 10Gi
+    accessModes: # 접근 모드
+    - ReadWriteOnce
+    persistentVolumeReclaimPolicy: Retain # Reclaim Policy
+    storageClassName: manual # StorageClass
+    # Persisitent Volume 플레그인별 설정
+    gcePersistentDisk:
+      pdName: sample-gce-pv
+      fsType: ext4
+```
+
+* 접근모드
+  * ReadWriteOnce : 단일 노드에서 Read/Write 가능
+  * ReadOnlyMany : 여러 노드에서 Read 가능
+  * ReadWriteMany : 여러 노드에서 Read/Write 가능
+  
+  => 단일 파드라 생각하고 개발 필요
+
+
+* Reclaim Policy
+  * 영구 볼륨을 사용한 후 처리 방법을 제어하는 정책
+  * Delete : 영구 볼륨 자체가 삭제
+  * Retain : 영구볼륨 자체를 삭제하지 않고 유지
+  * Recycle : 영구 볼륨 데이터를 삭제하고 재사용 가능한 상태로 만듬.
+
+
+### 영구 볼륨 클레임 조정을 사용한 볼륨 확장
+* aws 기준 awsElasticBlockStore
+
+```yaml
+apiversion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sample-storageclass
+parameters:
+  type: pd-ssd
+provisioner: kubernetes.io/gce-pd
+reclaimPolicy: Delete
+allowVolumeExpansion: true # 영구 볼륨 크기 조절 옵션
+```
+
+
